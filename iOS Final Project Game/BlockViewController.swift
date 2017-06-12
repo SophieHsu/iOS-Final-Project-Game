@@ -54,6 +54,13 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
             show(vc,sender: self)
         }
     }
+    
+    @IBAction func BlockRBtn(_ sender: UIButton) {
+        print("\(secondBlockArray[temp])")
+    }
+    @IBAction func BlockLBtn(_ sender: UIButton) {
+        print("\(firstBlockArray[temp])")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         if let number = receiveNumber{
