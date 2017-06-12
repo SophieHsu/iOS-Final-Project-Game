@@ -19,7 +19,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     var spawnTime:TimeInterval = 0
     var geometry:SCNGeometry!
     var geometryNode:SCNNode!
-    var temp = countNumber
+    var indexNumber = countNumber
     
     
 //  Chess piece
@@ -39,8 +39,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     var brickNum = 2
     var turnState = 1
     var pieceBool = false
-    var RNumber = 0
-    var LNumber = 0
+
     
 //  Array for brick height
     var brickHArray = Array(repeating: Array(repeating: 0, count: 10), count: 10)
@@ -55,34 +54,53 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         setupSKScene()
         setupCamera()
         setupPieces()
-        spawnShape(length: 1)
+        spawnShape(length: Double(firstBlockArray[indexNumber]))
         print(scnView.isUserInteractionEnabled)
         print(skScene.isUserInteractionEnabled)
-        let tapGesture = UITapGestureRecognizer(target: self, action:
-            #selector(handleTap(_:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         scnView.addGestureRecognizer(tapGesture)
         
         
         
-        if (temp < 0){
-            temp = 0
+        if (indexNumber < 0){
+            indexNumber = 0
         }
         
         let userDefaults = UserDefaults.standard
-        userDefaults.set(userNameArray[temp], forKey: "name")
-        userDefaults.set(colorArray[temp], forKey: "color")
-        userDefaults.set(userLevelArray[temp], forKey: "Level")
-        userDefaults.set(diceNumberArray[temp], forKey: "diceNumber")
-        userDefaults.set(firstBlockArray[temp], forKey: "firstBlock")
-        userDefaults.set(secondBlockArray[temp], forKey: "secondBlock")
+        userDefaults.set(userNameArray[indexNumber], forKey: "name")
+        userDefaults.set(colorArray[indexNumber], forKey: "color")
+        userDefaults.set(userLevelArray[indexNumber], forKey: "Level")
+        userDefaults.set(diceNumberArray[indexNumber], forKey: "diceNumber")
+        userDefaults.set(firstBlockArray[indexNumber], forKey: "firstBlock")
+        userDefaults.set(secondBlockArray[indexNumber], forKey: "secondBlock")
         
         userDefaults.synchronize()
         
         let color = userDefaults.object(forKey: "color")
+        let level = userDefaults.integer(forKey: "Level")
+        
         // 使用 UIImageView(frame:) 建立一個 UIImageView
-        let myImageView = UIImageView(
-            frame: CGRect(
-                x: 0, y: 0, width: 100, height: 100))
+        let myImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        let myLevelView = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
+        let myBlockView = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
+        
+        myLevelView.text = "Current level: \(level)"
+        
+        // Block number
+        if (indexNumberBoolL == true){
+            print("tempBoolL = true!")
+            let block = userDefaults.integer(forKey: "firstBlock")
+            myBlockView.text = "Block length : \(block)"
+            indexNumberBoolL = false
+        }
+
+        if (indexNumberBoolR == true){
+            print("tempBoolR = true!")
+            let block = userDefaults.integer(forKey: "secondBlock")
+            myBlockView.text = "Block length : \(block)"
+            indexNumberBoolR = false
+        }
+        
         
         // 使用 UIImage(named:) 放置圖片檔案
         if (color as! String == "blue"){
@@ -103,18 +121,18 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             x: fullScreenSize.width * 0.2,
             y: fullScreenSize.height * 0.15)
         self.view.addSubview(myImageView)
-        // Do any additional setup after loading the view.
         
-        // Block number
-        if (tempBool1 == true){
-            RNumber = secondBlockArray[temp]
-            tempBool1 = false
-        }
+        myLevelView.center = CGPoint(
+            x: fullScreenSize.width * 0.5,
+            y: fullScreenSize.height * 0.15)
+        self.view.addSubview(myLevelView)
         
-        if (tempBool2 == true){
-            LNumber = firstBlockArray[temp]
-            tempBool2 = false
-        }
+        myBlockView.center = CGPoint(
+            x: fullScreenSize.width * 0.5,
+            y: fullScreenSize.height * 0.2)
+        self.view.addSubview(myBlockView)
+
+
         
     }
     
@@ -148,8 +166,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             TouchState = "turn"
             print("turn!")
         } else if self.back.contains(location) {
-            TouchState = "turn"
-            print("turn!")
+            TouchState = "back"
+            print("back!")
         }
         if(pieceBool){
             movePiece(t: TouchState)
@@ -200,7 +218,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         skScene.addChild(downLeft)
         skScene.addChild(ok)
         skScene.addChild(turn)
-//        skScene.addChild(back)
+        skScene.addChild(back)
         scnView.overlaySKScene = skScene
     }
     
@@ -322,7 +340,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 
             if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.x += 7
-                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
+                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))
                 piece?.position.y += temp
             }
         } else if t == "upLeft" {
@@ -334,7 +352,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.z -= 7
                 print(Float(brickHArray[i+1][j] - brickHArray[i][j]))
-                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
+                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))
                 piece?.position.y += temp
             }
             
@@ -346,7 +364,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             
             if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.z += 7
-                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
+                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))
                 piece?.position.y += temp
             }
             
@@ -361,6 +379,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
                 print("temp = ", temp)
                 piece?.position.y += temp
+                print(piece?.position.y)
             }
             
         } else if t == "ok" {
@@ -429,7 +448,15 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 default:
                     break
                 }
-                let length = Double(Int(arc4random_uniform(10)+1))
+                               
+                var BlockLength = Double()
+                print("length:\(firstBlockArray[indexNumber])")
+                if(brickNum > 1){
+                    BlockLength = Double(secondBlockArray[indexNumber])
+                    spawnShape(length: BlockLength)
+                }
+                print("BlockLength = ", BlockLength)
+
 //                geometryNode.boundingBox.max = geometryNode.convertPosition(geometryNode.boundingBox.max, to: nil)
 //                print(geometryNode.boundingBox.max)
 //                geometryNode.boundingBox.min = geometryNode.convertPosition(geometryNode.boundingBox.min, to: nil)
@@ -492,7 +519,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
 //                    }
 //                }
 //                brickHArray[(i+35)/7][(j+35)/7] = Int(geometryNode.boundingBox.max.y)
-                spawnShape(length: length)
+                
                 brickNum -= 1
             }else{
                 for var j in 0...9{
@@ -526,7 +553,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             }
             
         } else if touch == "back" {
-            
+            print("countNumber = \(countNumber)")
+            if let vc = storyboard?.instantiateViewController(withIdentifier: "DiceViewController"){
+                countNumber = countNumber + 1
+                show(vc,sender: self)
+            }
         }
 //        let options = [SCNHitTestRootNodeKey: sceneView.scene!.rootNode, SCNHitTestClipToZRangeKey: 15, SCNHitTestSortResultsKey: true]
 //        let hits = sceneView.hitTest(point, options: options)

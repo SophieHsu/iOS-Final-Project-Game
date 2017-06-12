@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="MHS-JE-URs">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="MHS-JE-URs">
     <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -218,7 +218,7 @@
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" title="Next" id="F8W-ZM-IB0">
                                             <connections>
-                                                <segue destination="EwJ-mN-8c3" kind="show" id="P5Q-hS-C8Y"/>
+                                                <segue destination="EwJ-mN-8c3" kind="show" id="44u-4a-Ufh"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -369,6 +369,7 @@
                                 <state key="normal" title="Random"/>
                                 <connections>
                                     <action selector="diceButton:" destination="EwJ-mN-8c3" eventType="touchUpInside" id="TVZ-6i-beq"/>
+                                    <segue destination="pYx-c2-E3L" kind="show" identifier="segue_dice_to_block" id="1Yu-c3-H8u"/>
                                 </connections>
                             </button>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ARm-Yo-emd">
@@ -377,7 +378,7 @@
                                     <navigationItem title="Dice" id="Gaa-Bn-i7F">
                                         <barButtonItem key="leftBarButtonItem" title="Back" id="ChZ-he-J6o">
                                             <connections>
-                                                <action selector="BackButton:" destination="EwJ-mN-8c3" id="79e-YV-vYy"/>
+                                                <action selector="BackButton:" destination="EwJ-mN-8c3" id="G5Z-YB-oe6"/>
                                             </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" style="plain" id="zyV-cr-tfa">
@@ -387,11 +388,11 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <state key="normal" title="Next"/>
                                                 <connections>
-                                                    <segue destination="pYx-c2-E3L" kind="show" identifier="segue_dice_to_block" id="axx-bk-hj2"/>
+                                                    <segue destination="pYx-c2-E3L" kind="show" identifier="segue_dice_to_block" id="q6y-ak-Dqq"/>
                                                 </connections>
                                             </button>
                                             <connections>
-                                                <action selector="NextBtn:" destination="EwJ-mN-8c3" id="6uN-E2-UTd"/>
+                                                <action selector="NextBtn:" destination="EwJ-mN-8c3" id="cuQ-ZC-Kwl"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -444,16 +445,8 @@
                                 </constraints>
                                 <items>
                                     <navigationItem title="Blocks" id="ySv-B0-zci">
-                                        <barButtonItem key="leftBarButtonItem" title="Back" id="xqo-nM-7Nx">
-                                            <connections>
-                                                <action selector="BackButton:" destination="pYx-c2-E3L" id="tpj-Ay-NlG"/>
-                                            </connections>
-                                        </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Next" id="WWq-gj-kMm">
-                                            <connections>
-                                                <segue destination="BV1-FR-VrT" kind="show" identifier="segue_block_to_3D" id="GBs-Qd-RYh"/>
-                                            </connections>
-                                        </barButtonItem>
+                                        <barButtonItem key="leftBarButtonItem" title="Back" id="xqo-nM-7Nx"/>
+                                        <barButtonItem key="rightBarButtonItem" title="Next" id="WWq-gj-kMm"/>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -581,6 +574,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="oRl-dL-obI"/>
+        <segue reference="1Yu-c3-H8u"/>
         <segue reference="pLQ-G7-Ae5"/>
     </inferredMetricsTieBreakers>
 </document>
