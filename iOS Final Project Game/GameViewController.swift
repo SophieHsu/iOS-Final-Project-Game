@@ -19,6 +19,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     var spawnTime:TimeInterval = 0
     var geometry:SCNGeometry!
     var geometryNode:SCNNode!
+    var temp = countNumber
+    
     
 //  Chess piece
     
@@ -31,14 +33,19 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     let downLeft = SKSpriteNode(imageNamed:"downLeft")
     let ok = SKSpriteNode(imageNamed:"ok")
     let turn = SKSpriteNode(imageNamed:"turn")
+    let back = SKSpriteNode(imageNamed:"back")
 //  Variables
     var TouchState = ""
     var brickNum = 2
     var turnState = 1
     var pieceBool = false
+    var RNumber = 0
+    var LNumber = 0
     
 //  Array for brick height
     var brickHArray = Array(repeating: Array(repeating: 0, count: 10), count: 10)
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,6 +61,61 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         let tapGesture = UITapGestureRecognizer(target: self, action:
             #selector(handleTap(_:)))
         scnView.addGestureRecognizer(tapGesture)
+        
+        
+        
+        if (temp < 0){
+            temp = 0
+        }
+        
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(userNameArray[temp], forKey: "name")
+        userDefaults.set(colorArray[temp], forKey: "color")
+        userDefaults.set(userLevelArray[temp], forKey: "Level")
+        userDefaults.set(diceNumberArray[temp], forKey: "diceNumber")
+        userDefaults.set(firstBlockArray[temp], forKey: "firstBlock")
+        userDefaults.set(secondBlockArray[temp], forKey: "secondBlock")
+        
+        userDefaults.synchronize()
+        
+        let color = userDefaults.object(forKey: "color")
+        // 使用 UIImageView(frame:) 建立一個 UIImageView
+        let myImageView = UIImageView(
+            frame: CGRect(
+                x: 0, y: 0, width: 100, height: 100))
+        
+        // 使用 UIImage(named:) 放置圖片檔案
+        if (color as! String == "blue"){
+            myImageView.image = UIImage(named: "photo_blue")
+        }else if (color as! String == "yellow"){
+            myImageView.image = UIImage(named: "photo_yellow")
+        }else if (color as! String == "red"){
+            myImageView.image = UIImage(named: "photo_red")
+        }else if (color as! String == "green"){
+            myImageView.image = UIImage(named: "photo_green")
+        }
+        
+        // 取得螢幕的尺寸
+        let fullScreenSize = UIScreen.main.bounds.size
+        
+        // 設置新的位置並放入畫面中
+        myImageView.center = CGPoint(
+            x: fullScreenSize.width * 0.2,
+            y: fullScreenSize.height * 0.15)
+        self.view.addSubview(myImageView)
+        // Do any additional setup after loading the view.
+        
+        // Block number
+        if (tempBool1 == true){
+            RNumber = secondBlockArray[temp]
+            tempBool1 = false
+        }
+        
+        if (tempBool2 == true){
+            LNumber = firstBlockArray[temp]
+            tempBool2 = false
+        }
+        
     }
     
     func handleTap(_ gestureRecognize: UIGestureRecognizer) {
@@ -83,6 +145,9 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             TouchState = "ok"
             print("ok!")
         } else if self.turn.contains(location) {
+            TouchState = "turn"
+            print("turn!")
+        } else if self.back.contains(location) {
             TouchState = "turn"
             print("turn!")
         }
@@ -135,6 +200,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         skScene.addChild(downLeft)
         skScene.addChild(ok)
         skScene.addChild(turn)
+//        skScene.addChild(back)
         scnView.overlaySKScene = skScene
     }
     
@@ -197,6 +263,9 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
 
         turn.size = CGSize(width: 60, height: 50)
         turn.position = CGPoint(x: 220, y: 80)
+        
+        back.size = CGSize(width: 60, height: 50)
+        back.position = CGPoint(x: 740, y: 80)
     }
     
     func setupCamera() {
@@ -219,7 +288,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         if(length.truncatingRemainder(dividingBy: 2) != 0){
             geometryNode.position = SCNVector3(x: 3.6, y: 73.5, z: 3.6)
         }else{
-            geometryNode.position = SCNVector3(x: 7, y: 73.5, z: 3.6)
+            geometryNode.position = SCNVector3(x: 3.6, y: 73.5, z: 7)
         }
         geometryNode.physicsBody = SCNPhysicsBody(type: .kinematic, shape: nil)
         geometryNode.physicsBody?.isAffectedByGravity = true
@@ -251,7 +320,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
                 
-            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 2 && i < 10 && j < 10 && i > 0 && j > 0){
+            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.x += 7
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
                 piece?.position.y += temp
@@ -262,7 +331,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
             
-            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 2 && i < 10 && j < 10 && i > 0 && j > 0){
+            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.z -= 7
                 print(Float(brickHArray[i+1][j] - brickHArray[i][j]))
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
@@ -275,7 +344,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
             
-            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 2 && i < 10 && j < 10 && i > 0 && j > 0){
+            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.z += 7
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
                 piece?.position.y += temp
@@ -287,9 +356,10 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
             
-            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 2 && i < 10 && j < 10 && i > 0 && j > 0){
+            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.x -= 7
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
+                print(temp)
                 piece?.position.y += temp
             }
             
@@ -359,8 +429,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 default:
                     break
                 }
-
-                let length = Double(Int(arc4random_uniform(10) + 1))
+                var length = Double(0.0)
+                if(brickNum == 2){
+                    length = Double(RNumber)
+                } else if (brickNum == 1){
+                    length = Double(LNumber)
+                }
 //                geometryNode.boundingBox.max = geometryNode.convertPosition(geometryNode.boundingBox.max, to: nil)
 //                print(geometryNode.boundingBox.max)
 //                geometryNode.boundingBox.min = geometryNode.convertPosition(geometryNode.boundingBox.min, to: nil)
@@ -455,6 +529,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             default:
                 break
             }
+            
+        } else if touch == "back" {
             
         }
 //        let options = [SCNHitTestRootNodeKey: sceneView.scene!.rootNode, SCNHitTestClipToZRangeKey: 15, SCNHitTestSortResultsKey: true]
