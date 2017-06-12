@@ -9,6 +9,7 @@
 import UIKit
 
 var firstUserNmuber : Int = 0
+var countNumber : Int = 5
 
 var orderArray: Array<Int> = []
 class OrderViewController: UIViewController {
@@ -16,7 +17,7 @@ class OrderViewController: UIViewController {
 
     
     @IBAction func BackButton(_ sender: UIBarButtonItem) {
-        if let vc = storyboard?.instantiateViewController(withIdentifier: "PhotoViewController"){
+        if let vc = storyboard?.instantiateViewController(withIdentifier: "StartViewController"){
             show(vc,sender: self)
         }
     }

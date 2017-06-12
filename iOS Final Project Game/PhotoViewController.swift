@@ -9,12 +9,13 @@
 import UIKit
 
 
-var userNameArray: Array<String> = []
+var userNameArray: Array<String> = ["player_blue","player_yellow","player_red","player_green"]
+var colorArray: Array<String> = ["blue","yellow","red","green"]
 var userImageArray: Array<String> = []
-var userLevelArray: Array<Int> = []
-var diceNumberArray: Array<Int> = []
-var firstBlockArray: Array<Int> = []
-var secondBlockArray: Array<Int> = []
+var userLevelArray: Array<Int> = [0,0,0,0]
+var diceNumberArray: Array<Int> = [0,0,0,0]
+var firstBlockArray: Array<Int> = [0,0,0,0]
+var secondBlockArray: Array<Int> = [0,0,0,0]
 
 
 class PhotoViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
@@ -29,83 +30,41 @@ class PhotoViewController: UIViewController,UIImagePickerControllerDelegate,UINa
 //        let userBlueImage = UIImage(named: "player_blue")
 //        let imageData = UIImageJPEGRepresentation(userBlueImage!, 100)
         
-        userNameArray.append("player_blue")
-        userLevelArray.append(0)
-        diceNumberArray.append(0)
-        firstBlockArray.append(0)
-        secondBlockArray.append(0)
         
-//        let userDefaults = UserDefaults.standard
-//        userDefaults.set("playerBlue", forKey: "name")
-//        userDefaults.set(imageData, forKey: "imageData")
-//        userDefaults.set(0, forKey: "Level")
-//        userDefaults.set(0, forKey: "diceNumber")
-//        userDefaults.set(0, forKey: "firstBlock")
-//        userDefaults.set(0, forKey: "secondBlock")
-//
-//        userDefaults.synchronize()
-        
-        
-        
+       
     }
     @IBAction func YellowButton(_ sender: UIButton) {
 //        let userBlueImage = UIImage(named: "player_yellow")
 //        let imageData = UIImageJPEGRepresentation(userBlueImage!, 100)
         
-        userNameArray.append("player_yellow")
-        userLevelArray.append(0)
-        diceNumberArray.append(0)
-        firstBlockArray.append(0)
-        secondBlockArray.append(0)
+//        userNameArray.append("player_yellow")
+//        userLevelArray.append(0)
+//        diceNumberArray.append(0)
+//        firstBlockArray.append(0)
+//        secondBlockArray.append(0)
         
-//        let userDefaults = UserDefaults.standard
-//        userDefaults.set("playerYellow", forKey: "name")
-//        userDefaults.set(imageData, forKey: "imageData")
-//        userDefaults.set(0, forKey: "Level")
-//        userDefaults.set(0, forKey: "diceNumber")
-//        userDefaults.set(0, forKey: "firstBlock")
-//        userDefaults.set(0, forKey: "secondBlock")
-//        
-//        userDefaults.synchronize()
     }
     @IBAction func RedButton(_ sender: UIButton) {
 //        let userBlueImage = UIImage(named: "player_red")
 //        let imageData = UIImageJPEGRepresentation(userBlueImage!, 100)
         
-        userNameArray.append("player_red")
-        userLevelArray.append(0)
-        diceNumberArray.append(0)
-        firstBlockArray.append(0)
-        secondBlockArray.append(0)
-        
-//        let userDefaults = UserDefaults.standard
-//        userDefaults.set("playerRed", forKey: "name")
-//        userDefaults.set(imageData, forKey: "imageData")
-//        userDefaults.set(0, forKey: "Level")
-//        userDefaults.set(0, forKey: "diceNumber")
-//        userDefaults.set(0, forKey: "firstBlock")
-//        userDefaults.set(0, forKey: "secondBlock")
-//        
-//        userDefaults.synchronize()
+//        userNameArray.append("player_red")
+//        userLevelArray.append(0)
+//        diceNumberArray.append(0)
+//        firstBlockArray.append(0)
+//        secondBlockArray.append(0)
+
     }
     @IBAction func GreenButton(_ sender: UIButton) {
 //        let userBlueImage = UIImage(named: "player_green")
 //        let imageData = UIImageJPEGRepresentation(userBlueImage!, 100)
         
-        userNameArray.append("player_green")
-        userLevelArray.append(0)
-        diceNumberArray.append(0)
-        firstBlockArray.append(0)
-        secondBlockArray.append(0)
-//        let userDefaults = UserDefaults.standard
-//        userDefaults.set("playerGreen", forKey: "name")
-//        userDefaults.set(imageData, forKey: "imageData")
-//        userDefaults.set(0, forKey: "Level")
-//        userDefaults.set(0, forKey: "diceNumber")
-//        userDefaults.set(0, forKey: "firstBlock")
-//        userDefaults.set(0, forKey: "secondBlock")
-//        
-//        userDefaults.synchronize()
+//        userNameArray.append("player_green")
+//        userLevelArray.append(0)
+//        diceNumberArray.append(0)
+//        firstBlockArray.append(0)
+//        secondBlockArray.append(0)
+
     }
 //    var imagePicker: UIImagePickerController?
     @IBAction func takeAPicture(_ sender: UIButton) {

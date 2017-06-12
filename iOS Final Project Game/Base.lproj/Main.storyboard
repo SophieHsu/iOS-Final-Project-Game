@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -21,7 +22,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4127" y="119"/>
+            <point key="canvasLocation" x="3955" y="117"/>
         </scene>
         <!--Start View Controller-->
         <scene sceneID="mQd-NM-VFF">
@@ -56,7 +57,7 @@
                                     <color key="titleColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <segue destination="slt-kG-IdD" kind="show" id="aPr-AL-cTF"/>
+                                    <segue destination="aka-Ty-hI1" kind="show" id="sQ7-Jn-Wfh"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -99,11 +100,7 @@
                                                 <action selector="BackButton:" destination="slt-kG-IdD" id="mfe-hq-dbV"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Next" id="KtC-u7-y7m">
-                                            <connections>
-                                                <segue destination="aka-Ty-hI1" kind="show" id="Ixp-bt-Nuk"/>
-                                            </connections>
-                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Next" id="KtC-u7-y7m"/>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -221,7 +218,7 @@
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" title="Next" id="F8W-ZM-IB0">
                                             <connections>
-                                                <segue destination="EwJ-mN-8c3" kind="showDetail" id="sAE-H3-8ML"/>
+                                                <segue destination="EwJ-mN-8c3" kind="show" id="P5Q-hS-C8Y"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -249,9 +246,10 @@
                                                             <constraint firstAttribute="width" secondItem="B4X-lX-CWW" secondAttribute="height" multiplier="1:1" id="sHT-Ui-wXO"/>
                                                             <constraint firstAttribute="width" constant="150" id="u9s-G4-KYm"/>
                                                         </constraints>
-                                                        <state key="normal" image="photo"/>
+                                                        <state key="normal" image="photo_blue"/>
                                                         <connections>
                                                             <action selector="BlueButton:" destination="aka-Ty-hI1" eventType="touchUpInside" id="Nbz-IR-jKG"/>
+                                                            <segue destination="EwJ-mN-8c3" kind="show" id="QT6-cA-cdb"/>
                                                         </connections>
                                                     </button>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow_right" translatesAutoresizingMaskIntoConstraints="NO" id="tYc-Gb-RMo">
@@ -263,9 +261,10 @@
                                                             <constraint firstAttribute="width" secondItem="D5P-Jq-n2g" secondAttribute="height" multiplier="1:1" id="3pt-GU-f8r"/>
                                                             <constraint firstAttribute="width" constant="150" id="Bgc-H6-hkb"/>
                                                         </constraints>
-                                                        <state key="normal" image="photo"/>
+                                                        <state key="normal" image="photo_yellow"/>
                                                         <connections>
                                                             <action selector="YellowButton:" destination="aka-Ty-hI1" eventType="touchUpInside" id="FDM-jW-o6s"/>
+                                                            <segue destination="EwJ-mN-8c3" kind="show" id="pLQ-G7-Ae5"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -303,9 +302,10 @@
                                                             <constraint firstAttribute="width" secondItem="2U9-ti-hrA" secondAttribute="height" multiplier="1:1" id="1ZS-VR-50g"/>
                                                             <constraint firstAttribute="width" constant="150" id="Caw-PA-7Cx"/>
                                                         </constraints>
-                                                        <state key="normal" image="photo"/>
+                                                        <state key="normal" image="photo_green"/>
                                                         <connections>
                                                             <action selector="GreenButton:" destination="aka-Ty-hI1" eventType="touchUpInside" id="JOf-EU-rHz"/>
+                                                            <segue destination="EwJ-mN-8c3" kind="show" id="e4L-ZY-dSZ"/>
                                                         </connections>
                                                     </button>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow_left" translatesAutoresizingMaskIntoConstraints="NO" id="JNb-jy-tI1">
@@ -317,9 +317,10 @@
                                                             <constraint firstAttribute="width" secondItem="PkN-WP-Hjc" secondAttribute="height" multiplier="1:1" id="JrR-0V-jGo"/>
                                                             <constraint firstAttribute="width" constant="150" id="NmW-wr-UiH"/>
                                                         </constraints>
-                                                        <state key="normal" image="photo"/>
+                                                        <state key="normal" image="photo_red"/>
                                                         <connections>
                                                             <action selector="RedButton:" destination="aka-Ty-hI1" eventType="touchUpInside" id="p9P-l6-Qlv"/>
+                                                            <segue destination="EwJ-mN-8c3" kind="show" id="7JP-1t-bgs"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -357,22 +358,21 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lrs-ju-5D8">
-                                <rect key="frame" x="311" y="333" width="147" height="358.5"/>
+                                <rect key="frame" x="311" y="333" width="147" height="359"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="300"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0wD-sE-ozx">
-                                <rect key="frame" x="328.5" y="693" width="111" height="48"/>
+                                <rect key="frame" x="329" y="693" width="111" height="48"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <state key="normal" title="Random"/>
                                 <connections>
                                     <action selector="diceButton:" destination="EwJ-mN-8c3" eventType="touchUpInside" id="TVZ-6i-beq"/>
                                 </connections>
                             </button>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ARm-Yo-emd">
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ARm-Yo-emd">
                                 <rect key="frame" x="0.0" y="20" width="768" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <items>
                                     <navigationItem title="Dice" id="Gaa-Bn-i7F">
                                         <barButtonItem key="leftBarButtonItem" title="Back" id="ChZ-he-J6o">
@@ -390,26 +390,40 @@
                                                     <segue destination="pYx-c2-E3L" kind="show" identifier="segue_dice_to_block" id="axx-bk-hj2"/>
                                                 </connections>
                                             </button>
+                                            <connections>
+                                                <action selector="NextBtn:" destination="EwJ-mN-8c3" id="6uN-E2-UTd"/>
+                                            </connections>
                                         </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fvh-O5-HNU">
+                                <rect key="frame" x="20" y="124" width="728" height="162"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Lrs-ju-5D8" firstAttribute="top" secondItem="fvh-O5-HNU" secondAttribute="bottom" constant="47" id="01W-Wj-cNZ"/>
+                            <constraint firstItem="fvh-O5-HNU" firstAttribute="leading" secondItem="Jqa-ke-YAf" secondAttribute="leadingMargin" id="1Sh-8e-Sze"/>
+                            <constraint firstItem="ARm-Yo-emd" firstAttribute="centerX" secondItem="fvh-O5-HNU" secondAttribute="centerX" id="7yS-3x-mh4"/>
                             <constraint firstItem="Lrs-ju-5D8" firstAttribute="centerX" secondItem="Jqa-ke-YAf" secondAttribute="centerX" id="IMO-R4-2Bl"/>
                             <constraint firstItem="0wD-sE-ozx" firstAttribute="centerX" secondItem="Jqa-ke-YAf" secondAttribute="centerX" id="J5b-7c-fii"/>
+                            <constraint firstItem="ARm-Yo-emd" firstAttribute="leading" secondItem="Jqa-ke-YAf" secondAttribute="leading" id="M9h-T7-yxT"/>
                             <constraint firstItem="Lrs-ju-5D8" firstAttribute="centerY" secondItem="Jqa-ke-YAf" secondAttribute="centerY" id="Wcn-VQ-iVp"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="fvh-O5-HNU" secondAttribute="trailing" id="WjA-Pc-oAu"/>
+                            <constraint firstItem="fvh-O5-HNU" firstAttribute="top" secondItem="ARm-Yo-emd" secondAttribute="bottom" constant="60" id="ekk-V6-gjU"/>
                             <constraint firstItem="0wD-sE-ozx" firstAttribute="top" secondItem="Lrs-ju-5D8" secondAttribute="bottom" constant="1.5" id="vBv-hv-dcq"/>
+                            <constraint firstItem="ARm-Yo-emd" firstAttribute="top" secondItem="aIs-fR-3aN" secondAttribute="bottom" id="yZN-be-UG9"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="diceNumber" destination="Lrs-ju-5D8" id="UFb-Qk-odK"/>
+                        <outlet property="userColorImage" destination="fvh-O5-HNU" id="Nd8-SA-v4s"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EAY-tz-rp4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2422.65625" y="118.94531249999999"/>
+            <point key="canvasLocation" x="2520" y="117"/>
         </scene>
         <!--Block View Controller-->
         <scene sceneID="x2x-v0-Twg">
@@ -430,12 +444,16 @@
                                 </constraints>
                                 <items>
                                     <navigationItem title="Blocks" id="ySv-B0-zci">
-                                        <barButtonItem key="leftBarButtonItem" title="Back" id="QyL-W3-fr8">
+                                        <barButtonItem key="leftBarButtonItem" title="Back" id="xqo-nM-7Nx">
                                             <connections>
-                                                <action selector="BackButton:" destination="pYx-c2-E3L" id="m3c-2e-cJn"/>
+                                                <action selector="BackButton:" destination="pYx-c2-E3L" id="tpj-Ay-NlG"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Next" id="WWq-gj-kMm"/>
+                                        <barButtonItem key="rightBarButtonItem" title="Next" id="WWq-gj-kMm">
+                                            <connections>
+                                                <segue destination="BV1-FR-VrT" kind="show" id="GBs-Qd-RYh"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -502,9 +520,16 @@
         <image name="background_blue" width="3335" height="3324"/>
         <image name="logo" width="1506" height="1131"/>
         <image name="photo" width="121" height="121"/>
+        <image name="photo_blue" width="318" height="318"/>
+        <image name="photo_green" width="318" height="318"/>
+        <image name="photo_red" width="318" height="318"/>
+        <image name="photo_yellow" width="318" height="318"/>
         <image name="player_blue" width="60" height="109"/>
         <image name="player_green" width="60" height="112"/>
         <image name="player_red" width="60" height="113"/>
         <image name="player_yellow" width="60" height="110"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="pLQ-G7-Ae5"/>
+    </inferredMetricsTieBreakers>
 </document>

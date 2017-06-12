@@ -11,6 +11,8 @@ import UIKit
 class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate {
     
     @IBOutlet weak var result: UILabel!
+    var temp = countNumber
+    
     @available(iOS 2.0, *)
     public func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -34,14 +36,16 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         tempNumber = ans - block1Array[row]
+        firstBlockArray[temp] = block1Array[row]
+        print("firstBlockArray[\(temp)] =  \(firstBlockArray[temp])")
         if (tempNumber < 0){
             result.text = "error"
             print("pick error!")
         }else{
+            secondBlockArray[temp] = tempNumber
+            print("secondBlockArray[\(temp)] =  \(secondBlockArray[temp])")
             result.text = "\(tempNumber)"
         }
-        print(tempNumber)
-        
     }
     
 
@@ -59,6 +63,57 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
         }else{
             print("no data")
         }
+        
+        for name in userNameArray {
+            print(name)
+        }
+        for dice in diceNumberArray {
+            print(dice)
+        }
+        
+        
+        if (temp < 0){
+            temp = 0
+        }
+        
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(userNameArray[temp], forKey: "name")
+        userDefaults.set(colorArray[temp], forKey: "color")
+        userDefaults.set(userLevelArray[temp], forKey: "Level")
+        userDefaults.set(diceNumberArray[temp], forKey: "diceNumber")
+        userDefaults.set(firstBlockArray[temp], forKey: "firstBlock")
+        userDefaults.set(secondBlockArray[temp], forKey: "secondBlock")
+        
+        userDefaults.synchronize()
+        
+        let color = userDefaults.object(forKey: "color")
+        // 使用 UIImageView(frame:) 建立一個 UIImageView
+        let myImageView = UIImageView(
+            frame: CGRect(
+                x: 0, y: 0, width: 100, height: 100))
+        
+        // 使用 UIImage(named:) 放置圖片檔案
+        if (color as! String == "blue"){
+            myImageView.image = UIImage(named: "photo_blue")
+        }else if (color as! String == "yellow"){
+            myImageView.image = UIImage(named: "photo_yellow")
+        }else if (color as! String == "red"){
+            myImageView.image = UIImage(named: "photo_red")
+        }else if (color as! String == "green"){
+            myImageView.image = UIImage(named: "photo_green")
+        }
+        
+        // 取得螢幕的尺寸
+        let fullScreenSize = UIScreen.main.bounds.size
+        
+        // 設置新的位置並放入畫面中
+        myImageView.center = CGPoint(
+            x: fullScreenSize.width * 0.2,
+            y: fullScreenSize.height * 0.15)
+        self.view.addSubview(myImageView)
+        // Do any additional setup after loading the view.
+
+        
         // Do any additional setup after loading the view.
     }
 
