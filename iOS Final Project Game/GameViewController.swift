@@ -39,7 +39,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     var brickNum = 2
     var turnState = 1
     var pieceBool = false
-
+    var color: String? = nil
+    var block :Int = 0
     
 //  Array for brick height
     var brickHArray = Array(repeating: Array(repeating: 0, count: 10), count: 10)
@@ -48,19 +49,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
-        setupControlBtn()
-        setupScene()
-        setupSKScene()
-        setupCamera()
-        setupPieces()
-        spawnShape(length: Double(firstBlockArray[indexNumber]))
-        print(scnView.isUserInteractionEnabled)
-        print(skScene.isUserInteractionEnabled)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        scnView.addGestureRecognizer(tapGesture)
-        
-        
         
         if (indexNumber < 0){
             indexNumber = 0
@@ -74,9 +62,9 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         userDefaults.set(firstBlockArray[indexNumber], forKey: "firstBlock")
         userDefaults.set(secondBlockArray[indexNumber], forKey: "secondBlock")
         
-        userDefaults.synchronize()
+        userDefaults.synchronize()  // update data
         
-        let color = userDefaults.object(forKey: "color")
+        color = (userDefaults.object(forKey: "color") as! String)
         let level = userDefaults.integer(forKey: "Level")
         
         // 使用 UIImageView(frame:) 建立一個 UIImageView
@@ -89,27 +77,44 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         // Block number
         if (indexNumberBoolL == true){
             print("tempBoolL = true!")
-            let block = userDefaults.integer(forKey: "firstBlock")
+            block = userDefaults.integer(forKey: "firstBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolL = false
         }
-
+        
         if (indexNumberBoolR == true){
             print("tempBoolR = true!")
-            let block = userDefaults.integer(forKey: "secondBlock")
+            block = userDefaults.integer(forKey: "secondBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolR = false
         }
         
+        // 3D view build
+        setupView()
+        setupControlBtn()
+        setupScene()
+        setupSKScene()
+        setupCamera()
+        setupPieces()
+        spawnShape(length: Double(block))
+        print(scnView.isUserInteractionEnabled)
+        print(skScene.isUserInteractionEnabled)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        scnView.addGestureRecognizer(tapGesture)
+        
+        
+        
+        
+        
         
         // 使用 UIImage(named:) 放置圖片檔案
-        if (color as! String == "blue"){
+        if (color == "blue"){
             myImageView.image = UIImage(named: "photo_blue")
-        }else if (color as! String == "yellow"){
+        }else if (color == "yellow"){
             myImageView.image = UIImage(named: "photo_yellow")
-        }else if (color as! String == "red"){
+        }else if (color == "red"){
             myImageView.image = UIImage(named: "photo_red")
-        }else if (color as! String == "green"){
+        }else if (color == "green"){
             myImageView.image = UIImage(named: "photo_green")
         }
         
@@ -235,7 +240,24 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     
     func setupPieces(){
         geometry = SCNCone(topRadius: 0.0, bottomRadius: 3.5, height: 7.0)
-        geometry.firstMaterial?.diffuse.contents = UIColor.brown
+        // 使用 UIColor change color
+        
+        if (colorArray[indexNumber] == "blue"){
+            print("setupPieces : blue")
+            geometry.firstMaterial?.diffuse.contents = UIColor.blue
+        }else if (colorArray[indexNumber] == "yellow"){
+            print("setupPieces : yellow")
+            geometry.firstMaterial?.diffuse.contents = UIColor.yellow
+        }else if (colorArray[indexNumber] == "red"){
+            print("setupPieces : red")
+            geometry.firstMaterial?.diffuse.contents = UIColor.red
+        }else if (colorArray[indexNumber] == "green"){
+            print("setupPieces : green")
+            geometry.firstMaterial?.diffuse.contents = UIColor.green
+        }
+        
+        
+        
         geometryNode = SCNNode(geometry: geometry)
         geometryNode.name = "player1"
         scnScene.rootNode.addChildNode(geometryNode)
@@ -300,6 +322,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     
     func spawnShape(length: Double) {
         geometry = SCNBox(width: 7.0, height: 7.0, length: CGFloat(7.0*length), chamferRadius: 0.0)
+        
         geometry.firstMaterial?.diffuse.contents = UIColor.brown
         geometryNode = SCNNode(geometry: geometry)
         scnScene.rootNode.addChildNode(geometryNode)
@@ -452,9 +475,17 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 }
                                
                 var BlockLength = Double()
-                print("length:\(firstBlockArray[indexNumber])")
                 if(brickNum > 1){
-                    BlockLength = Double(secondBlockArray[indexNumber])
+                    if (indexNumberBoolL == true){
+                        BlockLength = Double(firstBlockArray[indexNumber])
+                        indexNumberBoolL = false
+                    }
+                    
+                    if (indexNumberBoolR == true){
+                        BlockLength = Double(secondBlockArray[indexNumber])
+                        indexNumberBoolR = false
+                    }
+                    
                     spawnShape(length: BlockLength)
                 }
                 print("BlockLength = ", BlockLength)
