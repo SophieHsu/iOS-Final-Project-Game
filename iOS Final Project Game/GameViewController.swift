@@ -39,7 +39,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     var brickNum = 2
     var turnState = 1
     var pieceBool = false
-
+    var color: String? = nil
+    var block :Int = 0
     
 //  Array for brick height
     var brickHArray = Array(repeating: Array(repeating: 0, count: 10), count: 10)
@@ -48,19 +49,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
-        setupControlBtn()
-        setupScene()
-        setupSKScene()
-        setupCamera()
-        setupPieces()
-        spawnShape(length: Double(firstBlockArray[indexNumber]))
-        print(scnView.isUserInteractionEnabled)
-        print(skScene.isUserInteractionEnabled)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        scnView.addGestureRecognizer(tapGesture)
-        
-        
         
         if (indexNumber < 0){
             indexNumber = 0
@@ -74,9 +62,9 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         userDefaults.set(firstBlockArray[indexNumber], forKey: "firstBlock")
         userDefaults.set(secondBlockArray[indexNumber], forKey: "secondBlock")
         
-        userDefaults.synchronize()
+        userDefaults.synchronize()  // update data
         
-        let color = userDefaults.object(forKey: "color")
+        color = (userDefaults.object(forKey: "color") as! String)
         let level = userDefaults.integer(forKey: "Level")
         
         // 使用 UIImageView(frame:) 建立一個 UIImageView
@@ -89,27 +77,44 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         // Block number
         if (indexNumberBoolL == true){
             print("tempBoolL = true!")
-            let block = userDefaults.integer(forKey: "firstBlock")
+            block = userDefaults.integer(forKey: "firstBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolL = false
         }
-
+        
         if (indexNumberBoolR == true){
             print("tempBoolR = true!")
-            let block = userDefaults.integer(forKey: "secondBlock")
+            block = userDefaults.integer(forKey: "secondBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolR = false
         }
         
+        // 3D view build
+        setupView()
+        setupControlBtn()
+        setupScene()
+        setupSKScene()
+        setupCamera()
+        setupPieces()
+        spawnShape(length: Double(block))
+        print(scnView.isUserInteractionEnabled)
+        print(skScene.isUserInteractionEnabled)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        scnView.addGestureRecognizer(tapGesture)
+        
+        
+        
+        
+        
         
         // 使用 UIImage(named:) 放置圖片檔案
-        if (color as! String == "blue"){
+        if (color == "blue"){
             myImageView.image = UIImage(named: "photo_blue")
-        }else if (color as! String == "yellow"){
+        }else if (color == "yellow"){
             myImageView.image = UIImage(named: "photo_yellow")
-        }else if (color as! String == "red"){
+        }else if (color == "red"){
             myImageView.image = UIImage(named: "photo_red")
-        }else if (color as! String == "green"){
+        }else if (color == "green"){
             myImageView.image = UIImage(named: "photo_green")
         }
         
@@ -168,6 +173,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         } else if self.back.contains(location) {
             TouchState = "back"
             print("back!")
+        }else{
+            TouchState = ""
         }
         if(pieceBool){
             movePiece(t: TouchState)
@@ -235,7 +242,24 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     
     func setupPieces(){
         geometry = SCNCone(topRadius: 0.0, bottomRadius: 3.5, height: 7.0)
-        geometry.firstMaterial?.diffuse.contents = UIColor.brown
+        // 使用 UIColor change color
+        
+        if (colorArray[indexNumber] == "blue"){
+            print("setupPieces : blue")
+            geometry.firstMaterial?.diffuse.contents = UIColor.blue
+        }else if (colorArray[indexNumber] == "yellow"){
+            print("setupPieces : yellow")
+            geometry.firstMaterial?.diffuse.contents = UIColor.yellow
+        }else if (colorArray[indexNumber] == "red"){
+            print("setupPieces : red")
+            geometry.firstMaterial?.diffuse.contents = UIColor.red
+        }else if (colorArray[indexNumber] == "green"){
+            print("setupPieces : green")
+            geometry.firstMaterial?.diffuse.contents = UIColor.green
+        }
+        
+        
+        
         geometryNode = SCNNode(geometry: geometry)
         geometryNode.name = "player1"
         scnScene.rootNode.addChildNode(geometryNode)
@@ -300,6 +324,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     
     func spawnShape(length: Double) {
         geometry = SCNBox(width: 7.0, height: 7.0, length: CGFloat(7.0*length), chamferRadius: 0.0)
+        
         geometry.firstMaterial?.diffuse.contents = UIColor.brown
         geometryNode = SCNNode(geometry: geometry)
         scnScene.rootNode.addChildNode(geometryNode)
@@ -333,8 +358,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         if t == "upRight" {
 //            print(brickHArray[(((piece?.position.x)!+35)/7)+1][((piece?.position.z+35)/7)])
 //            print(brickHArray[(((piece?.position.x)!+35)/7)][((piece?.position.z+35)/7)])
-            var i = Int(Int((piece?.position.x)!+35)/7)
-            var j = Int(Int((piece?.position.z)!+35)/7)
+            let i = Int(Int((piece?.position.x)!+35)/7)
+            let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
                 
@@ -344,8 +369,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 piece?.position.y += temp
             }
         } else if t == "upLeft" {
-            var i = Int(Int((piece?.position.x)!+35)/7)
-            var j = Int(Int((piece?.position.z)!+35)/7)
+            let i = Int(Int((piece?.position.x)!+35)/7)
+            let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
             
@@ -357,8 +382,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             }
             
         } else if t == "downRight" {
-            var i = Int(Int((piece?.position.x)!+35)/7)
-            var j = Int(Int((piece?.position.z)!+35)/7)
+            let i = Int(Int((piece?.position.x)!+35)/7)
+            let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
             
@@ -369,8 +394,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             }
             
         } else if t == "downLeft" {
-            var i = Int(Int((piece?.position.x)!+35)/7)
-            var j = Int(Int((piece?.position.z)!+35)/7)
+            let i = Int(Int((piece?.position.x)!+35)/7)
+            let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
             
@@ -381,11 +406,10 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 piece?.position.y += temp
                 print(piece?.position.y)
             }
-            
+        
         } else if t == "ok" {
             pieceBool = false
         }
-        
     }
     
     func moveBrick(touch: String) {
@@ -415,9 +439,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 var j = Int(geometryNode.position.z)
                 switch(turnState){
                 case 1:
+                    print("case 1:", Int(geometryNode.boundingBox.max.z*2), separator: " ", terminator: "")
                     brickHArray[(i+35)/7][(j+35)/7] = Int(geometryNode.boundingBox.max.z*2)
                     break
                 case 2:
+                    print("case 2:", ((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1), separator:" ", terminator:"")
                     for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
                         print("k = ", k)
                         print((i+35)/7-k, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
@@ -432,6 +458,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     break
                 case 3:
+                    print("case 3:", ((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1), separator:" ", terminator:"")
                     for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
                         print("k = ", k)
                         print((i+35)/7, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
@@ -450,76 +477,20 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 }
                                
                 var BlockLength = Double()
-                print("length:\(firstBlockArray[indexNumber])")
                 if(brickNum > 1){
-                    BlockLength = Double(secondBlockArray[indexNumber])
+                    if (indexNumberBoolL == true){
+                        BlockLength = Double(firstBlockArray[indexNumber])
+                        indexNumberBoolL = false
+                    }
+                    
+                    if (indexNumberBoolR == true){
+                        BlockLength = Double(secondBlockArray[indexNumber])
+                        indexNumberBoolR = false
+                    }
+                    
                     spawnShape(length: BlockLength)
                 }
                 print("BlockLength = ", BlockLength)
-
-//                geometryNode.boundingBox.max = geometryNode.convertPosition(geometryNode.boundingBox.max, to: nil)
-//                print(geometryNode.boundingBox.max)
-//                geometryNode.boundingBox.min = geometryNode.convertPosition(geometryNode.boundingBox.min, to: nil)
-//                print(geometryNode.boundingBox.max.x - geometryNode.boundingBox.min.x)
-//                print(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z)
-//                if abs(geometryNode.boundingBox.max.x - geometryNode.boundingBox.min.x) >= abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z){
-//                    print(Int(Double(geometryNode.boundingBox.max.x - geometryNode.boundingBox.min.x)/7.0))
-//                    
-//                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.x - geometryNode.boundingBox.min.x))/7.0) + 1)/2)-1) {
-//                        print("k = ", k)
-//                        print((i+35)/7-k, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-//                        if(turnState == 2){
-//                            brickHArray[(i+35)/7-k][(j+35)/7] = Int(geometryNode.boundingBox.max.y)
-//                        } else if(turnState == 3){
-//                            brickHArray[(i+35)/7-k][(j+35)/7] = Int(geometryNode.boundingBox.max.z)
-//                        } else {
-//                            brickHArray[(i+35)/7-k][(j+35)/7] = Int(geometryNode.boundingBox.max.x)
-//                        }
-//                    }
-//                    i = Int(geometryNode.position.x)
-//                    j = Int(geometryNode.position.z)
-//                    print(Int(Double(geometryNode.boundingBox.max.x - geometryNode.boundingBox.min.x)/7.0))
-//                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.x - geometryNode.boundingBox.min.x))/7.0) + 1)/2)-1) {
-//                        print("k = ", k)
-//                        print((i+35)/7+k, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-//                        if(turnState == 2){
-//                            brickHArray[(i+35)/7+k][(j+35)/7] = Int(geometryNode.boundingBox.max.y)
-//                        } else if(turnState == 3){
-//                            brickHArray[(i+35)/7+k][(j+35)/7] = Int(geometryNode.boundingBox.max.z)
-//                        } else {
-//                            brickHArray[(i+35)/7+k][(j+35)/7] = Int(geometryNode.boundingBox.max.x)
-//                        }
-//                    }
-//                }else{
-//                    print(Int(Double(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z)/7.0))
-//                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-//                        print("k = ", k)
-//                        print((i+35)/7, (j+35)/7-k, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-//                        if(turnState == 2){
-//                            brickHArray[(i+35)/7][(j+35)/7-k] = Int(geometryNode.boundingBox.max.y)
-//                        } else if(turnState == 3){
-//                            brickHArray[(i+35)/7][(j+35)/7-k] = Int(geometryNode.boundingBox.max.z)
-//                        } else {
-//                            brickHArray[(i+35)/7][(j+35)/7-k] = Int(geometryNode.boundingBox.max.x)
-//                        }
-//                    }
-//                    i = Int(geometryNode.position.x)
-//                    j = Int(geometryNode.position.z)
-//                    print(Int(Double(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z)/7.0))
-//                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-//                        print("k = ", k)
-//                        print((i+35)/7, (j+35)/7+k, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-//                        if(turnState == 2){
-//                            brickHArray[(i+35)/7][(j+35)/7+k] = Int(geometryNode.boundingBox.max.y)
-//                        } else if(turnState == 3){
-//                            brickHArray[(i+35)/7][(j+35)/7+k] = Int(geometryNode.boundingBox.max.z)
-//                        } else {
-//                            brickHArray[(i+35)/7][(j+35)/7+k] = Int(geometryNode.boundingBox.max.x)
-//                        }
-//                    }
-//                }
-//                brickHArray[(i+35)/7][(j+35)/7] = Int(geometryNode.boundingBox.max.y)
-                
                 brickNum -= 1
             }else{
                 for var j in 0...9{
@@ -559,15 +530,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 show(vc,sender: self)
             }
         }
-//        let options = [SCNHitTestRootNodeKey: sceneView.scene!.rootNode, SCNHitTestClipToZRangeKey: 15, SCNHitTestSortResultsKey: true]
-//        let hits = sceneView.hitTest(point, options: options)
-//        print(hits.first?.worldCoordinates)
-//        print(geometryNode.position)
-//        print(geometryNode.position.x-2)
-//        print(geometryNode.position.y-2)
-//        print(geometryNode.position.z-2)
-//        print(geometryNode.hitTestWithSegment(from: SCNVector3(x: geometryNode.position.x-2,y: geometryNode.position.y-2,z: geometryNode.position.z-2), to: SCNVector3(x: geometryNode.position.x+2,y: geometryNode.position.y+2,z: geometryNode.position.z+2), options: [:]).count)
-////        //                    print("interset!")
         TouchState = ""
     }
     
