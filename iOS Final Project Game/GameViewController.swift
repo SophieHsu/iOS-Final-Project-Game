@@ -76,14 +76,14 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         
         // Block number
         if (indexNumberBoolL == true){
-            print("tempBoolL = true!")
+            print("indexNumberBoolL = true!")
             block = userDefaults.integer(forKey: "firstBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolL = false
         }
         
         if (indexNumberBoolR == true){
-            print("tempBoolR = true!")
+            print("indexNumberBoolL = true!")
             block = userDefaults.integer(forKey: "secondBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolR = false
@@ -476,17 +476,42 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                                
                 var BlockLength = Double()
                 if(brickNum > 1){
-                    if (indexNumberBoolL == true){
-                        BlockLength = Double(firstBlockArray[indexNumber])
-                        indexNumberBoolL = false
-                    }
                     
-                    if (indexNumberBoolR == true){
+                    print("Bug!!!")
+                    // Bug: Block length = 0
+                    if (indexNumberBoolL == false){
+                        print("indexNumberBoolL = true!")
                         BlockLength = Double(secondBlockArray[indexNumber])
                         indexNumberBoolR = false
+                    }else if(indexNumberBoolR == false){
+                        print("indexNumberBoolR = true!")
+                        BlockLength = Double(firstBlockArray[indexNumber])
+
+                        indexNumberBoolL = false
+                    }
+                
+                    
+//                    if (indexNumberBoolL == true){
+//                        print("indexNumberBoolL == true")
+//                        let userDefaults = UserDefaults.standard
+//                        block = userDefaults.integer(forKey: "firstBlock")
+//                        print("block = \(block)")
+//                        BlockLength = Double(block)
+//                        indexNumberBoolL = false
+//                    }
+//                    
+//                    if (indexNumberBoolR == true){
+//                        print("indexNumberBoolR == true")
+//                        let userDefaults = UserDefaults.standard
+//                        block = userDefaults.integer(forKey: "secondBlock")
+//                        print("block = \(block)")
+//                        BlockLength = Double(block)
+//                        indexNumberBoolR = false
+//                    }
+                    if(BlockLength > 0){
+                        spawnShape(length: BlockLength)
                     }
                     
-                    spawnShape(length: BlockLength)
                 }
                 print("BlockLength = ", BlockLength)
 //                geometryNode.boundingBox.max = geometryNode.convertPosition(geometryNode.boundingBox.max, to: nil)
