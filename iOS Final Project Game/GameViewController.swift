@@ -359,7 +359,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.x -= 7
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
-                print(temp)
+                print("temp = ", temp)
                 piece?.position.y += temp
             }
             
@@ -429,12 +429,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 default:
                     break
                 }
-                var length = Double(0.0)
-                if(brickNum == 2){
-                    length = Double(RNumber)
-                } else if (brickNum == 1){
-                    length = Double(LNumber)
-                }
+                let length = Double(Int(arc4random_uniform(10)+1))
 //                geometryNode.boundingBox.max = geometryNode.convertPosition(geometryNode.boundingBox.max, to: nil)
 //                print(geometryNode.boundingBox.max)
 //                geometryNode.boundingBox.min = geometryNode.convertPosition(geometryNode.boundingBox.min, to: nil)
