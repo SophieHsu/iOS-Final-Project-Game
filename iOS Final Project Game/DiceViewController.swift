@@ -23,16 +23,18 @@ class DiceViewController: UIViewController {
         diceNumberArray[countNumber] = sendNumber!
         print("diceNumberArray[\(countNumber)] = \(diceNumberArray[countNumber])")
         
+        
+        
     }
     
     @IBAction func NextBtn(_ sender: UIBarButtonItem) {
-        countNumber = countNumber + 1
+//        countNumber = countNumber + 1
     }
     
     @IBAction func BackButton(_ sender: UIBarButtonItem) {
         if let vc = storyboard?.instantiateViewController(withIdentifier: "OrderViewController"){
             show(vc,sender: self)
-            countNumber = countNumber + 1
+//            countNumber = countNumber + 1
         }
     }
     

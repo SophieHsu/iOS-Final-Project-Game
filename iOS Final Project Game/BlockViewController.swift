@@ -8,13 +8,13 @@
 
 import UIKit
 
-var tempBool1 = false
-var tempBool2 = false
+var indexNumberBoolR = false
+var indexNumberBoolL = false
 
 class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate {
     
     @IBOutlet weak var result: UILabel!
-    var temp = countNumber
+    var indexNumber = countNumber
     
     @available(iOS 2.0, *)
     public func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -22,7 +22,8 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
     }
 
     let block1Array = [0,1,2,3,4,5,6,7,8,9,10]
-    var tempNumber = Int()
+    var indexNumberNumber = Int()
+    
     @IBOutlet weak var getNumber: UILabel!
     var receiveNumber : Int? = nil
     var ans = 0
@@ -38,16 +39,16 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
     
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        tempNumber = ans - block1Array[row]
-        firstBlockArray[temp] = block1Array[row]
-        print("firstBlockArray[\(temp)] =  \(firstBlockArray[temp])")
-        if (tempNumber < 0){
+        indexNumberNumber = ans - block1Array[row]
+        firstBlockArray[indexNumber] = block1Array[row]
+        print("firstBlockArray[\(indexNumber)] =  \(firstBlockArray[indexNumber])")
+        if (indexNumberNumber < 0){
             result.text = "error"
             print("pick error!")
         }else{
-            secondBlockArray[temp] = tempNumber
-            print("secondBlockArray[\(temp)] =  \(secondBlockArray[temp])")
-            result.text = "\(tempNumber)"
+            secondBlockArray[indexNumber] = indexNumberNumber
+            print("secondBlockArray[\(indexNumber)] =  \(secondBlockArray[indexNumber])")
+            result.text = "\(indexNumberNumber)"
         }
     }
     
@@ -59,25 +60,30 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
     }
     
     @IBAction func BlockRBtn(_ sender: UIButton) {
-        print("\(secondBlockArray[temp])")
-        tempBool1 = true
+        print("\(secondBlockArray[indexNumber])!!!")
+        print("indexNumberBoolR = true")
+        indexNumberBoolR = true
 
     }
     @IBAction func BlockLBtn(_ sender: UIButton) {
-        print("\(firstBlockArray[temp])")
-        tempBool2 = true
+        print("\(firstBlockArray[indexNumber])!!!")
+        print("indexNumberBoolL = true")
+        indexNumberBoolL = true
     }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let number = receiveNumber{
-            getNumber.text = "\(number)"
-            ans = number
-            print(number)
-        }else{
-            print("no data")
+        if receiveNumber != nil{
+            if let number = receiveNumber{
+                getNumber.text = "\(number)"
+                ans = number
+                print("getNumber: \(number)")
+            }else{
+                print("no data")
+            }
         }
+        
 
         
         for name in userNameArray {
@@ -88,25 +94,27 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
         }
         
         
-        if (temp < 0){
-            temp = 0
+        if (indexNumber < 4){
+            indexNumber = indexNumber + 0
+        }else if (indexNumber == 4){
+            indexNumber = 0
+        }else{
+            indexNumber = countNumber
         }
         
         let userDefaults = UserDefaults.standard
-        userDefaults.set(userNameArray[temp], forKey: "name")
-        userDefaults.set(colorArray[temp], forKey: "color")
-        userDefaults.set(userLevelArray[temp], forKey: "Level")
-        userDefaults.set(diceNumberArray[temp], forKey: "diceNumber")
-        userDefaults.set(firstBlockArray[temp], forKey: "firstBlock")
-        userDefaults.set(secondBlockArray[temp], forKey: "secondBlock")
+        userDefaults.set(userNameArray[indexNumber], forKey: "name")
+        userDefaults.set(colorArray[indexNumber], forKey: "color")
+        userDefaults.set(userLevelArray[indexNumber], forKey: "Level")
+        userDefaults.set(diceNumberArray[indexNumber], forKey: "diceNumber")
+        userDefaults.set(firstBlockArray[indexNumber], forKey: "firstBlock")
+        userDefaults.set(secondBlockArray[indexNumber], forKey: "secondBlock")
         
         userDefaults.synchronize()
         
         let color = userDefaults.object(forKey: "color")
         // 使用 UIImageView(frame:) 建立一個 UIImageView
-        let myImageView = UIImageView(
-            frame: CGRect(
-                x: 0, y: 0, width: 100, height: 100))
+        let myImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         
         // 使用 UIImage(named:) 放置圖片檔案
         if (color as! String == "blue"){
@@ -129,8 +137,7 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
         self.view.addSubview(myImageView)
         // Do any additional setup after loading the view.
 
-        
-        // Do any additional setup after loading the view.
+
     }
 
     override func didReceiveMemoryWarning() {
