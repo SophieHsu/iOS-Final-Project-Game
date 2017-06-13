@@ -96,7 +96,9 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         setupSKScene()
         setupCamera()
         setupPieces()
-        spawnShape(length: Double(block))
+        if (block != 0){
+            spawnShape(length: Double(block))
+        }
         print(scnView.isUserInteractionEnabled)
         print(skScene.isUserInteractionEnabled)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
@@ -492,24 +494,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                         
                     }
                 
-                    
-//                    if (indexNumberBoolL == true){
-//                        print("indexNumberBoolL == true")
-//                        let userDefaults = UserDefaults.standard
-//                        block = userDefaults.integer(forKey: "firstBlock")
-//                        print("block = \(block)")
-//                        BlockLength = Double(block)
-//                        indexNumberBoolL = false
-//                    }
-//                    
-//                    if (indexNumberBoolR == true){
-//                        print("indexNumberBoolR == true")
-//                        let userDefaults = UserDefaults.standard
-//                        block = userDefaults.integer(forKey: "secondBlock")
-//                        print("block = \(block)")
-//                        BlockLength = Double(block)
-//                        indexNumberBoolR = false
-//                    }
                     if(BlockLength > 0){
                         spawnShape(length: BlockLength)
                     }
