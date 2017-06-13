@@ -80,12 +80,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             block = userDefaults.integer(forKey: "firstBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolL = false
-        }
-        
-        if (indexNumberBoolR == true){
-            print("indexNumberBoolL = true!")
+            indexNumberBoolR = true
+        }else if (indexNumberBoolR == true){
+            print("indexNumberBoolR = true!")
             block = userDefaults.integer(forKey: "secondBlock")
             myBlockView.text = "Block length : \(block)"
+            indexNumberBoolL = true
             indexNumberBoolR = false
         }
         
@@ -479,15 +479,17 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     
                     print("Bug!!!")
                     // Bug: Block length = 0
-                    if (indexNumberBoolL == false){
+                    if (indexNumberBoolL == true){
                         print("indexNumberBoolL = true!")
-                        BlockLength = Double(secondBlockArray[indexNumber])
-                        indexNumberBoolR = false
-                    }else if(indexNumberBoolR == false){
-                        print("indexNumberBoolR = true!")
                         BlockLength = Double(firstBlockArray[indexNumber])
-
                         indexNumberBoolL = false
+                        indexNumberBoolR = false
+                    }else if(indexNumberBoolR == true){
+                        print("indexNumberBoolR = true!")
+                        BlockLength = Double(secondBlockArray[indexNumber])
+                        indexNumberBoolL = false
+                        indexNumberBoolR = false
+                        
                     }
                 
                     
