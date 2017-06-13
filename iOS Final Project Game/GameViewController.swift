@@ -76,14 +76,14 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         
         // Block number
         if (indexNumberBoolL == true){
-            print("tempBoolL = true!")
+            print("indexNumberBoolL = true!")
             block = userDefaults.integer(forKey: "firstBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolL = false
         }
         
         if (indexNumberBoolR == true){
-            print("tempBoolR = true!")
+            print("indexNumberBoolL = true!")
             block = userDefaults.integer(forKey: "secondBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolR = false
@@ -362,7 +362,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
-                
+            print("right gap = ", abs(Int(brickHArray[i+1][j] - brickHArray[i][j])))
             if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.x += 7
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))
@@ -373,11 +373,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
-            
-            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
+            print("up gap = ", abs(Int(brickHArray[i][j-1] - brickHArray[i][j])))
+            if (abs(Int(brickHArray[i][j-1] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.z -= 7
                 print(Float(brickHArray[i+1][j] - brickHArray[i][j]))
-                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))
+                let temp = (Float(brickHArray[i][j-1] - brickHArray[i][j]))
                 piece?.position.y += temp
             }
             
@@ -386,10 +386,10 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
-            
-            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
+            print("down gap = ", abs(Int(brickHArray[i][j+1] - brickHArray[i][j])))
+            if (abs(Int(brickHArray[i][j+1] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.z += 7
-                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))
+                let temp = (Float(brickHArray[i][j+1] - brickHArray[i][j]))
                 piece?.position.y += temp
             }
             
@@ -398,10 +398,10 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             let j = Int(Int((piece?.position.z)!+35)/7)
             print(i, j, separator:" ", terminator:"")
             print(i+1, j, separator:" ", terminator:"")
-            
-            if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
+            print("left gap = ", abs(Int(brickHArray[i-1][j] - brickHArray[i][j])))
+            if (abs(Int(brickHArray[i-1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.x -= 7
-                let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))/10
+                let temp = (Float(brickHArray[i-1][j] - brickHArray[i][j]))/10
                 print("temp = ", temp)
                 piece?.position.y += temp
                 print(piece?.position.y)
@@ -423,16 +423,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             }
         } else if touch == "upRight" {
             geometryNode.position.x += 7
-//            geometryNode.position.z -= 7
         } else if touch == "upLeft" {
-//            geometryNode.position.x -= 7
             geometryNode.position.z -= 7
         } else if touch == "downRight" {
-//            geometryNode.position.x += 7
             geometryNode.position.z += 7
         } else if touch == "downLeft" {
             geometryNode.position.x -= 7
-//            geometryNode.position.z += 7
         } else if touch == "ok" {
             if(brickNum > 0){
                 var i = Int(geometryNode.position.x)
@@ -478,17 +474,42 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                                
                 var BlockLength = Double()
                 if(brickNum > 1){
-                    if (indexNumberBoolL == true){
-                        BlockLength = Double(firstBlockArray[indexNumber])
-                        indexNumberBoolL = false
-                    }
                     
-                    if (indexNumberBoolR == true){
+                    print("Bug!!!")
+                    // Bug: Block length = 0
+                    if (indexNumberBoolL == false){
+                        print("indexNumberBoolL = true!")
                         BlockLength = Double(secondBlockArray[indexNumber])
                         indexNumberBoolR = false
+                    }else if(indexNumberBoolR == false){
+                        print("indexNumberBoolR = true!")
+                        BlockLength = Double(firstBlockArray[indexNumber])
+
+                        indexNumberBoolL = false
+                    }
+                
+                    
+//                    if (indexNumberBoolL == true){
+//                        print("indexNumberBoolL == true")
+//                        let userDefaults = UserDefaults.standard
+//                        block = userDefaults.integer(forKey: "firstBlock")
+//                        print("block = \(block)")
+//                        BlockLength = Double(block)
+//                        indexNumberBoolL = false
+//                    }
+//                    
+//                    if (indexNumberBoolR == true){
+//                        print("indexNumberBoolR == true")
+//                        let userDefaults = UserDefaults.standard
+//                        block = userDefaults.integer(forKey: "secondBlock")
+//                        print("block = \(block)")
+//                        BlockLength = Double(block)
+//                        indexNumberBoolR = false
+//                    }
+                    if(BlockLength > 0){
+                        spawnShape(length: BlockLength)
                     }
                     
-                    spawnShape(length: BlockLength)
                 }
                 print("BlockLength = ", BlockLength)
                 brickNum -= 1
