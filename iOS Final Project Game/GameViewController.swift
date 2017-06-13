@@ -37,7 +37,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
 //  Variables
     var TouchState = ""
     var brickNum = 2
-    var turnState = 1
+    var turnState = 3
     var pieceBool = false
     var color: String? = nil
     var block :Int = 0
@@ -331,7 +331,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         if(length.truncatingRemainder(dividingBy: 2) != 0){
             geometryNode.position = SCNVector3(x: 3.6, y: 73.5, z: 3.6)
         }else{
-            geometryNode.position = SCNVector3(x: 3.6, y: 73.5, z: 7)
+            geometryNode.position = SCNVector3(x: 3.6, y: 73.5, z: 3.5)
+            geometryNode.pivot = SCNMatrix4MakeTranslation(0, 0, 3.5)
         }
         geometryNode.physicsBody = SCNPhysicsBody(type: .kinematic, shape: nil)
         geometryNode.physicsBody?.isAffectedByGravity = true
@@ -433,39 +434,75 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             if(brickNum > 0){
                 var i = Int(geometryNode.position.x)
                 var j = Int(geometryNode.position.z)
+                var maxHeight = 0;
+                
                 switch(turnState){
                 case 1:
-                    print("case 1:", Int(geometryNode.boundingBox.max.z*2), separator: " ", terminator: "")
-                    brickHArray[(i+35)/7][(j+35)/7] = Int(geometryNode.boundingBox.max.z*2)
+                    print("case 1:")
+                    brickHArray[(i+35)/7][(j+35)/7] += Int(geometryNode.boundingBox.max.z*2)
                     break
                 case 2:
-                    print("case 2:", ((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1), separator:" ", terminator:"")
+                    print("case 2:")
                     for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        print("k = ", k)
-                        print((i+35)/7-k, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-                        brickHArray[(i+35)/7-k][(j+35)/7] = Int(geometryNode.boundingBox.max.x*2)
+                        brickHArray[(i+35)/7-k][(j+35)/7] += Int(geometryNode.boundingBox.max.x*2)
+                        if(brickHArray[(i+35)/7-k][(j+35)/7] > maxHeight){
+                            maxHeight = brickHArray[(i+35)/7-k][(j+35)/7]
+                        }
                     }
+                    i = Int(geometryNode.position.x)
+                    j = Int(geometryNode.position.z)
+                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                        brickHArray[(i+35)/7+k][(j+35)/7] += Int(geometryNode.boundingBox.max.x*2)
+                        if(brickHArray[(i+35)/7+k][(j+35)/7] > maxHeight){
+                            maxHeight = brickHArray[(i+35)/7+k][(j+35)/7]
+                        }
+                    }
+                    
+                    //syncrinize
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
                     for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
                         print("k = ", k)
-                        print((i+35)/7+k, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-                        brickHArray[(i+35)/7+k][(j+35)/7] = Int(geometryNode.boundingBox.max.x*2)
+                        print("[", (i+35)/7-k, (j+35)/7,"] = ", Int(geometryNode.boundingBox.max.x*2))
+                        brickHArray[(i+35)/7-k][(j+35)/7] = maxHeight
+                    }
+                    i = Int(geometryNode.position.x)
+                    j = Int(geometryNode.position.z)
+                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                        print("k = ", k)
+                        print("[", (i+35)/7+k, (j+35)/7,"] = ", Int(geometryNode.boundingBox.max.x*2))
+                        brickHArray[(i+35)/7+k][(j+35)/7] = maxHeight
                     }
                     break
                 case 3:
-                    print("case 3:", ((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1), separator:" ", terminator:"")
+                    print("case 3:")
                     for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        print("k = ", k)
-                        print((i+35)/7, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-                        brickHArray[(i+35)/7][(j+35)/7-k] = Int(geometryNode.boundingBox.max.y*2)
+                        brickHArray[(i+35)/7][(j+35)/7-k] += Int(geometryNode.boundingBox.max.y*2)
+                        if(brickHArray[(i+35)/7][(j+35)/7-k] > maxHeight){
+                            maxHeight = brickHArray[(i+35)/7][(j+35)/7-k]
+                        }
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
+                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                        brickHArray[(i+35)/7][(j+35)/7+k] += Int(geometryNode.boundingBox.max.x*2)
+                        if(brickHArray[(i+35)/7][(j+35)/7+k] > maxHeight){
+                            maxHeight = brickHArray[(i+35)/7][(j+35)/7+k]
+                        }
+                    }
+                    
+                    //syncrinize
+                    i = Int(geometryNode.position.x)
+                    j = Int(geometryNode.position.z)
                     for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        print("k = ", k)
-                        print((i+35)/7+k, (j+35)/7, Int(geometryNode.boundingBox.max.y), separator:" ", terminator:"")
-                        brickHArray[(i+35)/7][(j+35)/7+k] = Int(geometryNode.boundingBox.max.x*2)
+                        print("[", (i+35)/7, (j+35)/7-k,"] = ", maxHeight)
+                        brickHArray[(i+35)/7][(j+35)/7-k] = maxHeight
+                    }
+                    i = Int(geometryNode.position.x)
+                    j = Int(geometryNode.position.z)
+                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                        print("[", (i+35)/7, (j+35)/7+k,"] = ", maxHeight)
+                        brickHArray[(i+35)/7][(j+35)/7+k] = maxHeight
                     }
                     break
                 default:
@@ -511,12 +548,13 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     
                 }
+                turnState = 3;
                 print("BlockLength = ", BlockLength)
                 brickNum -= 1
             }else{
                 for var j in 0...9{
                     for var i in 0...9{
-                        print(brickHArray[i][j], terminator:"")
+                        print(brickHArray[i][j], separator: ", ", terminator:"")
                     }
                     print()
                 }
@@ -533,12 +571,15 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             switch(turnState){
             case 1:
                 geometryNode.rotation = SCNVector4Make(1.0, 0.0, 0.0, Float(M_PI_2))
+                print("turnState = ", turnState)
                 break
             case 2:
                 geometryNode.rotation = SCNVector4Make(0.0, 1.0, 0.0, Float(M_PI_2))
+                print("turnState = ", turnState)
                 break
             case 3:
                 geometryNode.rotation = SCNVector4Make(0.0, 0.0, 1.0, Float(M_PI_2))
+                print("turnState = ", turnState)
                 break
             default:
                 break
