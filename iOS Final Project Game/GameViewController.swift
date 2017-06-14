@@ -451,10 +451,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
-                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        brickHArray[(i+35)/7+k][(j+35)/7] += Int(geometryNode.boundingBox.max.x*2)
-                        if(brickHArray[(i+35)/7+k][(j+35)/7] > maxHeight){
-                            maxHeight = brickHArray[(i+35)/7+k][(j+35)/7]
+                    if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
+                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                            brickHArray[(i+35)/7+k][(j+35)/7] += Int(geometryNode.boundingBox.max.x*2)
+                            if(brickHArray[(i+35)/7+k][(j+35)/7] > maxHeight){
+                                maxHeight = brickHArray[(i+35)/7+k][(j+35)/7]
+                            }
                         }
                     }
                     
@@ -468,10 +470,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
-                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        print("k = ", k)
-                        print("[", (i+35)/7+k, (j+35)/7,"] = ", Int(geometryNode.boundingBox.max.x*2))
-                        brickHArray[(i+35)/7+k][(j+35)/7] = maxHeight
+                    if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
+                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                            print("k = ", k)
+                            print("[", (i+35)/7+k, (j+35)/7,"] = ", Int(geometryNode.boundingBox.max.x*2))
+                            brickHArray[(i+35)/7+k][(j+35)/7] = maxHeight
+                        }
                     }
                     break
                 case 3:
@@ -484,10 +488,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
-                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        brickHArray[(i+35)/7][(j+35)/7+k] += Int(geometryNode.boundingBox.max.x*2)
-                        if(brickHArray[(i+35)/7][(j+35)/7+k] > maxHeight){
-                            maxHeight = brickHArray[(i+35)/7][(j+35)/7+k]
+                    if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
+                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                            brickHArray[(i+35)/7][(j+35)/7+k] += Int(geometryNode.boundingBox.max.x*2)
+                            if(brickHArray[(i+35)/7][(j+35)/7+k] > maxHeight){
+                                maxHeight = brickHArray[(i+35)/7][(j+35)/7+k]
+                            }
                         }
                     }
                     
@@ -500,9 +506,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
-                    for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        print("[", (i+35)/7, (j+35)/7+k,"] = ", maxHeight)
-                        brickHArray[(i+35)/7][(j+35)/7+k] = maxHeight
+                    if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
+                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                            print("[", (i+35)/7, (j+35)/7+k,"] = ", maxHeight)
+                            brickHArray[(i+35)/7][(j+35)/7+k] = maxHeight
+                        }
                     }
                     break
                 default:
