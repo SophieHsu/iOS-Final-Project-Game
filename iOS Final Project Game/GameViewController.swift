@@ -11,6 +11,8 @@ import QuartzCore
 import SpriteKit
 import SceneKit
 
+var brickArray: [SCNNode] = []
+
 class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDelegate, SCNPhysicsContactDelegate{
     var scnView: SCNView!
     var scnScene: SCNScene!
@@ -34,6 +36,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     let ok = SKSpriteNode(imageNamed:"ok")
     let turn = SKSpriteNode(imageNamed:"turn")
     let back = SKSpriteNode(imageNamed:"back")
+    let win = SKSpriteNode(imageNamed: "win")
 //  Variables
     var TouchState = ""
     var brickNum = 2
@@ -42,9 +45,10 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     var brickBool = true
     var color: String? = nil
     var block :Int = 0
+    var endBool = false
     
 //  Array for brick height
-    var brickHArray = Array(repeating: Array(repeating: 0, count: 10), count: 10)
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,9 +64,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         userDefaults.set(diceNumberArray[indexNumber], forKey: "diceNumber")
         userDefaults.set(firstBlockArray[indexNumber], forKey: "firstBlock")
         userDefaults.set(secondBlockArray[indexNumber], forKey: "secondBlock")
-        userDefaults.set(playerPieceArray[indexNumber], forKey: "playerPiece")
-        print(playerPieceArray[indexNumber])
-        scnScene.rootNode.addChildNode(playerPieceArray[indexNumber])
         
         userDefaults.synchronize()  // update data
         
@@ -82,12 +83,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             block = userDefaults.integer(forKey: "firstBlock")
             myBlockView.text = "Block length : \(block)"
             indexNumberBoolL = false
-        }
-        
-        if (indexNumberBoolR == true){
-            print("indexNumberBoolL = true!")
+            indexNumberBoolR = true
+        }else if (indexNumberBoolR == true){
+            print("indexNumberBoolR = true!")
             block = userDefaults.integer(forKey: "secondBlock")
             myBlockView.text = "Block length : \(block)"
+            indexNumberBoolL = true
             indexNumberBoolR = false
         }
         
@@ -97,8 +98,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         setupScene()
         setupSKScene()
         setupCamera()
+        setupOrignalBlicks()
         setupPieces()
-        spawnShape(length: Double(block))
+        if (block != 0){
+            spawnShape(length: Double(block))
+        }
         print(scnView.isUserInteractionEnabled)
         print(skScene.isUserInteractionEnabled)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
@@ -164,9 +168,23 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         } else if self.turn.contains(location) {
             TouchState = "turn"
             print("turn!")
+        } else if self.win.contains(location) {
+            if(pieceBool == false && brickBool == false && endBool == true){
+                TouchState = "win"
+                print("win!")
+                if let vc = storyboard?.instantiateViewController(withIdentifier: "PlayerViewController"){
+                    countNumber = 0
+                    show(vc,sender: self)
+                }
+            }
         } else if self.back.contains(location) {
             TouchState = "back"
             print("back!")
+            print("countNumber = \(countNumber)")
+            if let vc = storyboard?.instantiateViewController(withIdentifier: "DiceViewController"){
+                countNumber = countNumber + 1
+                show(vc,sender: self)
+            }
         }else{
             TouchState = ""
         }
@@ -225,25 +243,29 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     }
     
     func setupPieces(){
-        geometry = SCNCone(topRadius: 0.0, bottomRadius: 3.5, height: 7.0)
-        // 使用 UIColor change color
-        
-        if (colorArray[indexNumber] == "blue"){
-            print("setupPieces : blue")
-            geometry.firstMaterial?.diffuse.contents = UIColor.blue
-        }else if (colorArray[indexNumber] == "yellow"){
-            print("setupPieces : yellow")
-            geometry.firstMaterial?.diffuse.contents = UIColor.yellow
-        }else if (colorArray[indexNumber] == "red"){
-            print("setupPieces : red")
-            geometry.firstMaterial?.diffuse.contents = UIColor.red
-        }else if (colorArray[indexNumber] == "green"){
-            print("setupPieces : green")
-            geometry.firstMaterial?.diffuse.contents = UIColor.green
+//        geometry = SCNCone(topRadius: 0.0, bottomRadius: 3.5, height: 7.0)
+//        // 使用 UIColor change color
+//        
+//        if (colorArray[indexNumber] == "blue"){
+//            print("setupPieces : blue")
+//            geometry.firstMaterial?.diffuse.contents = UIColor.blue
+//        }else if (colorArray[indexNumber] == "yellow"){
+//            print("setupPieces : yellow")
+//            geometry.firstMaterial?.diffuse.contents = UIColor.yellow
+//        }else if (colorArray[indexNumber] == "red"){
+//            print("setupPieces : red")
+//            geometry.firstMaterial?.diffuse.contents = UIColor.red
+//        }else if (colorArray[indexNumber] == "green"){
+//            print("setupPieces : green")
+//            geometry.firstMaterial?.diffuse.contents = UIColor.green
+//        }
+//
+        for i in 0...3 {
+            if i != indexNumber {
+                scnScene.rootNode.addChildNode(playerPieceArray[i])
+            }
         }
-        
-        geometryNode = SCNNode(geometry: geometry)
-        geometryNode.name = "player1"
+        geometryNode = playerPieceArray[indexNumber]
         scnScene.rootNode.addChildNode(geometryNode)
         print("hi")
         //print(playPiecePosition[indexNumber])
@@ -273,13 +295,16 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         downLeft.position = CGPoint(x: 810, y: 80)
 
         ok.size = CGSize(width: 60, height: 50)
-        ok.position = CGPoint(x: 150, y: 80)
+        ok.position = CGPoint(x: 250, y: 80)
 
         turn.size = CGSize(width: 60, height: 50)
-        turn.position = CGPoint(x: 220, y: 80)
+        turn.position = CGPoint(x: 160, y: 80)
+        
+        win.size = CGSize(width: 200, height: 200)
+        win.position = CGPoint(x: 500, y: 500)
         
         back.size = CGSize(width: 60, height: 50)
-        back.position = CGPoint(x: 740, y: 80)
+        back.position = CGPoint(x: 730, y: 80)
     }
     
     func setupCamera() {
@@ -294,10 +319,15 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         scnScene.rootNode.addChildNode(cameraNode)
     }
     
+    func setupOrignalBlicks(){
+        for node in brickArray {
+            scnScene.rootNode.addChildNode(node)
+        }
+    }
+    
     func spawnShape(length: Double) {
         geometry = SCNBox(width: 7.0, height: 7.0, length: CGFloat(7.0*length), chamferRadius: 0.0)
-        
-        geometry.firstMaterial?.diffuse.contents = UIColor.brown
+        geometry.firstMaterial?.diffuse.contents = UIColor.lightGray
         geometryNode = SCNNode(geometry: geometry)
         scnScene.rootNode.addChildNode(geometryNode)
         if(length.truncatingRemainder(dividingBy: 2) != 0){
@@ -327,7 +357,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     }
     
     func movePiece(t: String){
-        let piece = scnScene.rootNode.childNode(withName: "player1", recursively: false)
+        let piece = scnScene.rootNode.childNode(withName: playerPieceArray[indexNumber].name!, recursively: false)
         if t == "upRight" {
 //            print(brickHArray[(((piece?.position.x)!+35)/7)+1][((piece?.position.z+35)/7)])
 //            print(brickHArray[(((piece?.position.x)!+35)/7)][((piece?.position.z+35)/7)])
@@ -337,9 +367,19 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i+1, j, separator:" ", terminator:"")
             print("right gap = ", abs(Int(brickHArray[i+1][j] - brickHArray[i][j])))
             if (abs(Int(brickHArray[i+1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
-                piece?.position.x += 7
+                var overlapPiece = false
                 let temp = (Float(brickHArray[i+1][j] - brickHArray[i][j]))
-                piece?.position.y += temp
+                for i in 0...3{
+                    if(i != indexNumber) {
+                        if((((piece?.position.x)! + 7) == playerPieceArray[i].position.x) && (((piece?.position.y)! + temp) == playerPieceArray[i].position.y) && (piece?.position.z == playerPieceArray[i].position.z)){
+                            overlapPiece = true
+                        }
+                    }
+                }
+                if(overlapPiece == false){
+                    piece?.position.x += 7
+                    piece?.position.y += temp
+                }
             }
         } else if t == "upLeft" {
             let i = Int(Int((piece?.position.x)!+35)/7)
@@ -348,10 +388,19 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i+1, j, separator:" ", terminator:"")
             print("up gap = ", abs(Int(brickHArray[i][j-1] - brickHArray[i][j])))
             if (abs(Int(brickHArray[i][j-1] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
-                piece?.position.z -= 7
-                print(Float(brickHArray[i+1][j] - brickHArray[i][j]))
+                var overlapPiece = false
                 let temp = (Float(brickHArray[i][j-1] - brickHArray[i][j]))
-                piece?.position.y += temp
+                for i in 0...3{
+                    if(i != indexNumber) {
+                        if((((piece?.position.x)! - 7) == playerPieceArray[i].position.x) && (((piece?.position.y)! + temp) == playerPieceArray[i].position.y) && ((piece?.position.z)! == playerPieceArray[i].position.z)){
+                            overlapPiece = true
+                        }
+                    }
+                }
+                if(overlapPiece == false){
+                    piece?.position.z -= 7
+                    piece?.position.y += temp
+                }
             }
             
         } else if t == "downRight" {
@@ -361,9 +410,19 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i+1, j, separator:" ", terminator:"")
             print("down gap = ", abs(Int(brickHArray[i][j+1] - brickHArray[i][j])))
             if (abs(Int(brickHArray[i][j+1] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
-                piece?.position.z += 7
+                var overlapPiece = false
                 let temp = (Float(brickHArray[i][j+1] - brickHArray[i][j]))
-                piece?.position.y += temp
+                for i in 0...3{
+                    if(i != indexNumber) {
+                        if((((piece?.position.x)! + 7) == playerPieceArray[i].position.x) && (((piece?.position.y)! + temp) == playerPieceArray[i].position.y) && ((piece?.position.z)! == playerPieceArray[i].position.z)){
+                            overlapPiece = true
+                        }
+                    }
+                }
+                if(overlapPiece == false){
+                    piece?.position.z += 7
+                    piece?.position.y += temp
+                }
             }
             
         } else if t == "downLeft" {
@@ -373,16 +432,31 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print(i+1, j, separator:" ", terminator:"")
             print("left gap = ", abs(Int(brickHArray[i-1][j] - brickHArray[i][j])))
             if (abs(Int(brickHArray[i-1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
-                piece?.position.x -= 7
+                var overlapPiece: Bool = false
                 let temp = (Float(brickHArray[i-1][j] - brickHArray[i][j]))
-                print("temp = ", temp)
-                piece?.position.y += temp
-                print(piece?.position.y)
+                for i in 0...3{
+                    if(i != indexNumber) {
+                        if((((piece?.position.x)! - 7) == playerPieceArray[i].position.x) && (((piece?.position.y)! + temp) == playerPieceArray[i].position
+                            .y) && ((piece?.position.z)! == playerPieceArray[i].position.z)){
+                            overlapPiece = true
+                        }
+                    }
+                }
+                if(overlapPiece == false){
+                    piece?.position.x -= 7
+                    piece?.position.y += temp
+                }
             }
         
         } else if t == "ok" {
-            //playPiecePosition[indexNumber] = (piece?.position)!
+            print(((piece?.position.y)! - 3.5) / 7)
+            userLevelArray[indexNumber] = Int((piece?.position.y)! - 3.5) / 7
+            playerPieceArray[indexNumber].position = (piece?.position)!
             pieceBool = false
+            if(userLevelArray[indexNumber] >= 10){
+                skScene.addChild(win)
+                endBool = true
+            }
         }
     }
     
@@ -413,6 +487,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 case 1:
                     print("case 1:")
                     brickHArray[(i+35)/7][(j+35)/7] += Int(geometryNode.boundingBox.max.z*2)
+                    geometryNode.geometry?.firstMaterial?.diffuse.contents = UIColor.brown
+                    brickArray.append(geometryNode)
                     break
                 case 2:
                     print("case 2:")
@@ -462,6 +538,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                             brickHArray[(i+35)/7+k][(j+35)/7] = maxHeight
                         }
                     }
+                    geometryNode.geometry?.firstMaterial?.diffuse.contents = UIColor.brown
+                    brickArray.append(geometryNode)
                     break
                 case 3:
                     print("case 3:")
@@ -511,6 +589,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                             brickHArray[(i+35)/7][(j+35)/7+k] = maxHeight
                         }
                     }
+                    geometryNode.geometry?.firstMaterial?.diffuse.contents = UIColor.brown
+                    brickArray.append(geometryNode)
                     break
                 default:
                     break
@@ -521,35 +601,19 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     
                     print("Bug!!!")
                     // Bug: Block length = 0
-                    if (indexNumberBoolL == false){
+                    if (indexNumberBoolL == true){
                         print("indexNumberBoolL = true!")
-                        BlockLength = Double(secondBlockArray[indexNumber])
-                        indexNumberBoolR = false
-                    }else if(indexNumberBoolR == false){
-                        print("indexNumberBoolR = true!")
                         BlockLength = Double(firstBlockArray[indexNumber])
-
                         indexNumberBoolL = false
+                        indexNumberBoolR = false
+                    }else if(indexNumberBoolR == true){
+                        print("indexNumberBoolR = true!")
+                        BlockLength = Double(secondBlockArray[indexNumber])
+                        indexNumberBoolL = false
+                        indexNumberBoolR = false
+                        
                     }
                 
-                    
-//                    if (indexNumberBoolL == true){
-//                        print("indexNumberBoolL == true")
-//                        let userDefaults = UserDefaults.standard
-//                        block = userDefaults.integer(forKey: "firstBlock")
-//                        print("block = \(block)")
-//                        BlockLength = Double(block)
-//                        indexNumberBoolL = false
-//                    }
-//                    
-//                    if (indexNumberBoolR == true){
-//                        print("indexNumberBoolR == true")
-//                        let userDefaults = UserDefaults.standard
-//                        block = userDefaults.integer(forKey: "secondBlock")
-//                        print("block = \(block)")
-//                        BlockLength = Double(block)
-//                        indexNumberBoolR = false
-//                    }
                     if(BlockLength > 0){
                         spawnShape(length: BlockLength)
                     }
@@ -593,12 +657,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 break
             }
             
-        } else if touch == "back" {
-            print("countNumber = \(countNumber)")
-            if let vc = storyboard?.instantiateViewController(withIdentifier: "DiceViewController"){
-                countNumber = countNumber + 1
-                show(vc,sender: self)
-            }
         }
         TouchState = ""
     }

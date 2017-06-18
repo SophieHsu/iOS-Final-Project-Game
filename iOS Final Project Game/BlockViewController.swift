@@ -21,12 +21,17 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
         return 1
     }
 
-    let block1Array = [0,1,2,3,4,5,6,7,8,9,10]
+    
     var indexNumberNumber = Int()
     
     @IBOutlet weak var getNumber: UILabel!
     var receiveNumber : Int? = nil
     var ans = 0
+    
+    //var block1Array = [0,1,2,3,4,5,6,7,8,9,10]
+    var block1Array = [Int]()
+    
+
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return block1Array.count
@@ -79,6 +84,10 @@ class BlockViewController: UIViewController,UIPickerViewDataSource,UIPickerViewD
                 getNumber.text = "\(number)"
                 ans = number
                 print("getNumber: \(number)")
+                for i in 0..<ans+1{
+                    block1Array.append(i)
+                }
+                
             }else{
                 print("no data")
             }

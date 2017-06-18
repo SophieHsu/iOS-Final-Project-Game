@@ -13,6 +13,8 @@ var firstUserNmuber : Int = 0
 var countNumber : Int = 5
 var playerPieceArray: [SCNNode] = []
 var orderArray: Array<Int> = []
+var brickHArray = Array(repeating: Array(repeating: 0, count: 10), count: 10)
+
 class OrderViewController: UIViewController {
     
 
@@ -79,11 +81,11 @@ class OrderViewController: UIViewController {
             if (colorArray[i] == "blue"){
                 geometryNode.position = SCNVector3(x: 3.6+14.0, y: 3.5, z: 3.6+14.0)
             }else if (colorArray[i] == "yellow"){
-                geometryNode.position = SCNVector3(x: 3.6+14.0, y: 3.5, z: 3.6-14.0)
+                geometryNode.position = SCNVector3(x: 3.6+14.0, y: 3.5, z: 3.6-21.0)
             }else if (colorArray[i] == "red"){
-                geometryNode.position = SCNVector3(x: 3.6-14.0, y: 3.5, z: 3.6+14.0)
+                geometryNode.position = SCNVector3(x: 3.6-21.0, y: 3.5, z: 3.6+14.0)
             }else if (colorArray[i] == "green"){
-                geometryNode.position = SCNVector3(x: 3.6-14.0, y: 3.5, z: 3.6-14.0)
+                geometryNode.position = SCNVector3(x: 3.6-21.0, y: 3.5, z: 3.6-21.0)
             }
             
             geometryNode.physicsBody = SCNPhysicsBody(type: .kinematic, shape: nil)
