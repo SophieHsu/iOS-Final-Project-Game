@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SceneKit
 
 var userNameArray: Array<String> = ["player_blue","player_yellow","player_red","player_green"]
 var colorArray: Array<String> = ["blue","yellow","red","green"]
@@ -109,13 +109,12 @@ class PhotoViewController: UIViewController,UIImagePickerControllerDelegate,UINa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-
         // Do any additional setup after loading the view.
     }
     
     
     
+
     
 
     override func didReceiveMemoryWarning() {

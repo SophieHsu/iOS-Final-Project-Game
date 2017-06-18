@@ -39,14 +39,13 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
     var brickNum = 2
     var turnState = 3
     var pieceBool = false
+    var brickBool = true
     var color: String? = nil
     var block :Int = 0
     
 //  Array for brick height
     var brickHArray = Array(repeating: Array(repeating: 0, count: 10), count: 10)
-    
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -61,6 +60,9 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         userDefaults.set(diceNumberArray[indexNumber], forKey: "diceNumber")
         userDefaults.set(firstBlockArray[indexNumber], forKey: "firstBlock")
         userDefaults.set(secondBlockArray[indexNumber], forKey: "secondBlock")
+        userDefaults.set(playerPieceArray[indexNumber], forKey: "playerPiece")
+        print(playerPieceArray[indexNumber])
+        scnScene.rootNode.addChildNode(playerPieceArray[indexNumber])
         
         userDefaults.synchronize()  // update data
         
@@ -102,11 +104,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         scnView.addGestureRecognizer(tapGesture)
         
-        
-        
-        
-        
-        
         // 使用 UIImage(named:) 放置圖片檔案
         if (color == "blue"){
             myImageView.image = UIImage(named: "photo_blue")
@@ -136,9 +133,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             x: fullScreenSize.width * 0.5,
             y: fullScreenSize.height * 0.2)
         self.view.addSubview(myBlockView)
-
-
-        
     }
     
     func handleTap(_ gestureRecognize: UIGestureRecognizer) {
@@ -178,7 +172,8 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         }
         if(pieceBool){
             movePiece(t: TouchState)
-        }else{
+        }
+        if(brickBool){
             moveBrick(touch: TouchState)
         }
         //print(geometryNode.position)
@@ -229,17 +224,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
         scnView.overlaySKScene = skScene
     }
     
-//    func collada2SCNNode(filepath:String) -> SCNNode {
-//        var node = SCNNode()
-//        let scene = SCNScene(named: filepath)
-////        var nodeArray = scene!.rootNode.childNodes
-//        
-////        for childNode in nodeArray {
-//            node.addChildNode(childNode as SCNNode)
-////        }
-//        return node
-//    }
-    
     func setupPieces(){
         geometry = SCNCone(topRadius: 0.0, bottomRadius: 3.5, height: 7.0)
         // 使用 UIColor change color
@@ -258,26 +242,14 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             geometry.firstMaterial?.diffuse.contents = UIColor.green
         }
         
-        
-        
         geometryNode = SCNNode(geometry: geometry)
         geometryNode.name = "player1"
         scnScene.rootNode.addChildNode(geometryNode)
-        geometryNode.position = SCNVector3(x: 3.6+14.0, y: 3.5, z: 3.6+14.0)
+        print("hi")
+        //print(playPiecePosition[indexNumber])
+        //geometryNode.position = playPiecePosition[indexNumber]
         geometryNode.physicsBody = SCNPhysicsBody(type: .kinematic, shape: nil)
         geometryNode.physicsBody?.isAffectedByGravity = true
-
-        
-        // Load the character.
-//        let characterScene = SCNScene.init(url: "Assets.xcassets/queen.dae", options: [:])
-//        let characterTopLevelNode = characterScene.RootNode.ChildNodes[0];
-//        
-//        scnScene.rootNode.addChildNode(characterTopLevelNode)
-////        let myNode = collada2SCNNode(filepath: "Assets.xcassets/queen.dataset/queen.dae")
-////        print(myNode)
-//        let assetScene = SCNScene(named: "queen.dae")
-////        let node = assetScene?.rootNode.childNode[0]
-//        scnScene.rootNode.addChildNode(node)
         
     }
     
@@ -402,13 +374,14 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             print("left gap = ", abs(Int(brickHArray[i-1][j] - brickHArray[i][j])))
             if (abs(Int(brickHArray[i-1][j] - brickHArray[i][j])) < 8 && i < 10 && j < 10 && i > 0 && j > 0){
                 piece?.position.x -= 7
-                let temp = (Float(brickHArray[i-1][j] - brickHArray[i][j]))/10
+                let temp = (Float(brickHArray[i-1][j] - brickHArray[i][j]))
                 print("temp = ", temp)
                 piece?.position.y += temp
                 print(piece?.position.y)
             }
         
         } else if t == "ok" {
+            //playPiecePosition[indexNumber] = (piece?.position)!
             pieceBool = false
         }
     }
@@ -435,7 +408,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 var i = Int(geometryNode.position.x)
                 var j = Int(geometryNode.position.z)
                 var maxHeight = 0;
-                
+                var halfLength = 0;
                 switch(turnState){
                 case 1:
                     print("case 1:")
@@ -443,7 +416,12 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     break
                 case 2:
                     print("case 2:")
-                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)
+                    }else{
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2) - 1
+                    }
+                    for k in (0 ... halfLength) {
                         brickHArray[(i+35)/7-k][(j+35)/7] += Int(geometryNode.boundingBox.max.x*2)
                         if(brickHArray[(i+35)/7-k][(j+35)/7] > maxHeight){
                             maxHeight = brickHArray[(i+35)/7-k][(j+35)/7]
@@ -451,8 +429,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2 - 1)
+                    }
                     if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
-                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                        for k in (1 ... halfLength) {
                             brickHArray[(i+35)/7+k][(j+35)/7] += Int(geometryNode.boundingBox.max.x*2)
                             if(brickHArray[(i+35)/7+k][(j+35)/7] > maxHeight){
                                 maxHeight = brickHArray[(i+35)/7+k][(j+35)/7]
@@ -463,24 +444,33 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     //syncrinize
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
-                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        print("k = ", k)
-                        print("[", (i+35)/7-k, (j+35)/7,"] = ", Int(geometryNode.boundingBox.max.x*2))
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)
+                    }else{
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2) - 1
+                    }
+                    for k in (0 ... halfLength) {
                         brickHArray[(i+35)/7-k][(j+35)/7] = maxHeight
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2 - 1)
+                    }
                     if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
-                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                            print("k = ", k)
-                            print("[", (i+35)/7+k, (j+35)/7,"] = ", Int(geometryNode.boundingBox.max.x*2))
+                        for k in (1 ... halfLength) {
                             brickHArray[(i+35)/7+k][(j+35)/7] = maxHeight
                         }
                     }
                     break
                 case 3:
                     print("case 3:")
-                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)
+                    }else{
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2) - 1
+                    }
+                    for k in (0 ... halfLength) {
                         brickHArray[(i+35)/7][(j+35)/7-k] += Int(geometryNode.boundingBox.max.y*2)
                         if(brickHArray[(i+35)/7][(j+35)/7-k] > maxHeight){
                             maxHeight = brickHArray[(i+35)/7][(j+35)/7-k]
@@ -488,8 +478,11 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2 - 1)
+                    }
                     if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
-                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
+                        for k in (1 ... halfLength) {
                             brickHArray[(i+35)/7][(j+35)/7+k] += Int(geometryNode.boundingBox.max.x*2)
                             if(brickHArray[(i+35)/7][(j+35)/7+k] > maxHeight){
                                 maxHeight = brickHArray[(i+35)/7][(j+35)/7+k]
@@ -500,15 +493,21 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                     //syncrinize
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
-                    for k in (0 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                        print("[", (i+35)/7, (j+35)/7-k,"] = ", maxHeight)
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)
+                    }else{
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2) - 1
+                    }
+                    for k in (0 ... halfLength) {
                         brickHArray[(i+35)/7][(j+35)/7-k] = maxHeight
                     }
                     i = Int(geometryNode.position.x)
                     j = Int(geometryNode.position.z)
+                    if(Int(Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) % 2 == 0){
+                        halfLength = (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2 - 1)
+                    }
                     if((Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1 >= 1){
-                        for k in (1 ... (Int((Double(abs(geometryNode.boundingBox.max.z - geometryNode.boundingBox.min.z))/7.0) + 1)/2)-1) {
-                            print("[", (i+35)/7, (j+35)/7+k,"] = ", maxHeight)
+                        for k in (1 ... halfLength) {
                             brickHArray[(i+35)/7][(j+35)/7+k] = maxHeight
                         }
                     }
@@ -559,15 +558,16 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
                 turnState = 3;
                 print("BlockLength = ", BlockLength)
                 brickNum -= 1
-            }else{
-                for var j in 0...9{
-                    for var i in 0...9{
-                        print(brickHArray[i][j], separator: ", ", terminator:"")
+                if(brickNum == 0){
+                    for var j in 0...9{
+                        for var i in 0...9{
+                            print(brickHArray[i][j], separator: " ", terminator:"")
+                        }
+                        print()
                     }
-                    print()
+                    pieceBool = true
+                    brickBool = false
                 }
-                pieceBool = true
-//                movePiece(t: touch)
             }
         } else if touch == "turn" {
             if(turnState < 3){
@@ -601,11 +601,6 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate, SKSceneDel
             }
         }
         TouchState = ""
-    }
-    
-    func viewDidAppear(){
-        print(geometryNode.hitTestWithSegment(from: SCNVector3(x: geometryNode.position.x-1,y: geometryNode.position.y-1,z: 0), to: SCNVector3(x: geometryNode.position.x+2,y: geometryNode.position.y+2,z: 0), options: [:]).count)
-        
     }
 
 }
